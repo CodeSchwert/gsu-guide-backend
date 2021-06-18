@@ -3,6 +3,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const version = require('./package.json').version;
+const notFoundHandler = require('./middleware/404Handler');
+const errorHandler = require('./middleware/errorHandler');
 
 // constants
 const PORT = process.env.SERVER_PORT || 5500;
