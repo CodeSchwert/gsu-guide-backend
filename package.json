@@ -6,6 +6,9 @@
   "author": "Nik Ho <CodeSchwert@protonmail.com>",
   "license": "MIT",
   "private": false,
+  "scripts": {
+    "start:dev": "nodemon -r dotenv/config server.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
