@@ -5,8 +5,9 @@ const availabilityRouter = (dataRepo) => {
   const router = Router();
 
   router.get('/', async (req, res) => {
-    // const availabilityEvents = await dataRepo.getAvailability(); -- from the future uwu
-    return res.status(200).json(data.availability);
+    const availabilityEvents = await dataRepo.getAvailability();
+    console.log(availabilityEvents);
+    return res.status(200).json(availabilityEvents);
   });
 
   router.patch('/:id', (req, res) => {

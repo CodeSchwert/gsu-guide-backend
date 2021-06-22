@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const version = require('./package.json').version;
 const notFoundHandler = require('./middleware/404Handler');
 const errorHandler = require('./middleware/errorHandler');
+const { availability } = require('./data/repository');
 const availabilityRouter = require('./routers/availability');
 
 // constants
@@ -25,7 +26,7 @@ server.get('/', (_, res) => {
 });
 
 // resource routers
-server.use('/availability', availabilityRouter());
+server.use('/availability', availabilityRouter(availability));
 
 // error handlers
 server.use('*', notFoundHandler);
