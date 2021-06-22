@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const version = require('./package.json').version;
 const notFoundHandler = require('./middleware/404Handler');
 const errorHandler = require('./middleware/errorHandler');
-const data = require('./mockData/db.json');
+const availabilityRouter = require('./routers/availability');
 
 // constants
 const PORT = process.env.SERVER_PORT || 5500;
@@ -24,16 +24,8 @@ server.get('/', (_, res) => {
   return res.json({ service: 'teaching-availability', version });
 });
 
-server.get('/availability', (req, res) => {
-  return res.status(200).json(data.availability);
-});
-
-server.patch('/availability/:id', (req, res) => {
-  return res.status(200).json({
-    params: req.params,
-    body: req.body
-  });
-});
+// resource routers
+server.use('/availability', availabilityRouter());
 
 // error handlers
 server.use('*', notFoundHandler);
