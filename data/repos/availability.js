@@ -69,11 +69,7 @@ const deleteAvailability = async (id) => {
       throw new Error('Availability event id required.');
     }
 
-    // TODO -- Add Joi object validation on `event`
-
     const deletedEvent = await Availability.findByIdAndDelete(id);
-    console.log('repos.deletedEvent', deletedEvent)
-    // const results = queryAvailability({ _id: updatedEvent._id });
 
     return deletedEvent ? true : null;
   } catch (e) {
