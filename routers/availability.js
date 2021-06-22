@@ -6,7 +6,9 @@ const availabilityRouter = (dataRepo) => {
   router.get('/', async (req, res) => {
     try {
       const availabilityEvents = await dataRepo.getAvailability();
-      console.log(availabilityEvents);
+
+      console.log(availabilityEvents); // delete me!
+
       return res.status(200).json(availabilityEvents);
     } catch (e) {
       console.error(e);
