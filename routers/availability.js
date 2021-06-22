@@ -64,6 +64,29 @@ const availabilityRouter = (dataRepo) => {
     }
   });
 
+  router.delete('/:id', async (req, res, next) => {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res
+          .status(400)
+          .json({ error: 'Availability event id required.' });
+      }
+
+      const deletedEvent = await dataRepo.deleteAvailability(id);
+
+      if (deletedEvent) {
+        return res.status(200).json({ success: 'Availability event deleted.' });
+      } else {
+        return res.status(204).end();
+      }
+    } catch (e) {
+      console.error(e);
+      next(e);
+    }
+  });
+
   return router;
 };
 
