@@ -37,11 +37,31 @@ const availabilityRouter = (dataRepo) => {
     }
   });
 
-  router.patch('/:id', (req, res) => {
-    return res.status(200).json({
-      params: req.params,
-      body: req.body
-    });
+  router.patch('/:id', async (req, res, next) => {
+    try {
+      const event = req.body;
+      const { id } = req.params;
+
+      if (!event) {
+        return res
+          .status(400)
+          .json({ error: 'Availability event object required.' });
+      }
+      if (!id) {
+        return res
+          .status(400)
+          .json({ error: 'Availability event id required.' });
+      }
+
+      // TODO -- check times are between 7am-10pm
+
+      const updatedEvent = await dataRepo.updateAvailability(id, event);
+
+      return res.status(200).json(updatedEvent);
+    } catch (e) {
+      console.error(e);
+      next(e);
+    }
   });
 
   return router;
