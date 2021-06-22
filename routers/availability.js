@@ -1,13 +1,17 @@
 const { Router } = require('express');
-const data = require('../mockData/db.json');
 
 const availabilityRouter = (dataRepo) => {
   const router = Router();
 
   router.get('/', async (req, res) => {
-    const availabilityEvents = await dataRepo.getAvailability();
-    console.log(availabilityEvents);
-    return res.status(200).json(availabilityEvents);
+    try {
+      const availabilityEvents = await dataRepo.getAvailability();
+      console.log(availabilityEvents);
+      return res.status(200).json(availabilityEvents);
+    } catch (e) {
+      console.error(e);
+      next(e);
+    }
   });
 
   router.post('/', async (req, res, next) => {
@@ -19,6 +23,8 @@ const availabilityRouter = (dataRepo) => {
           .status(400)
           .json({ error: 'Availability event object required.' });
       }
+
+      // TODO -- check times are between 7am-10pm
 
       const newEvent = await dataRepo.addAvailability(event);
 
