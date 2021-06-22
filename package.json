@@ -8,7 +8,8 @@
   "private": false,
   "scripts": {
     "start:dev": "nodemon -r dotenv/config server.js",
-    "start": "node -r dotenv/config server.js"
+    "start": "node -r dotenv/config server.js",
+    "test": "jest --runInBand --verbose"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -19,6 +20,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.23",
     "jest": "^27.0.4",
     "nodemon": "^2.0.7",
     "supertest": "^6.1.3"
