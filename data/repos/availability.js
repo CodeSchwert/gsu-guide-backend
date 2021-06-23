@@ -31,6 +31,8 @@ const addAvailability = async (event) => {
     // TODO -- Add Joi object validation on `event`
 
     const newEvent = await Availability.create(event);
+
+    // TODO -- project newEvent in JS rather than make another DB query
     const results = queryAvailability({ _id: newEvent._id });
 
     return results;
@@ -54,6 +56,8 @@ const updateAvailability = async (id, event) => {
     const updatedEvent = await Availability.findByIdAndUpdate(id, event, {
       new: true // return the updated document
     });
+
+    // TODO -- project newEvent in JS rather than make another DB query
     const results = queryAvailability({ _id: updatedEvent._id });
 
     return results;

@@ -1,4 +1,21 @@
 const { Router } = require('express');
+const moment = require('moment-timezone');
+
+/**
+ * Check the event time period is within an acceptable time period, 7am-10pm 
+ * @param {Object} event 
+ * @returns {Boolean}
+ */
+const isValidTimePeriod = (event) => {
+  const { start, end, timezone } = event;
+  const startDateTime = moment(start).tz(timezone);
+  const endDateTime = moment(end).tz(timezone);
+  console.log(startDateTime, endDateTime);
+  console.log(startDateTime.date(), endDateTime.date()); // 24 25
+  console.log(startDateTime.hour(), endDateTime.hour()); // 16 3
+
+  return Boolean;
+};
 
 const availabilityRouter = (dataRepo) => {
   const router = Router();
@@ -27,6 +44,7 @@ const availabilityRouter = (dataRepo) => {
       }
 
       // TODO -- check times are between 7am-10pm
+      isValidTimePeriod(event);
 
       const newEvent = await dataRepo.addAvailability(event);
 
