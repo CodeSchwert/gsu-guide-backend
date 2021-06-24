@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const moment = require('moment-timezone');
+const schema = require('../validation/availabilitySchema');
 
 /**
  * Check the event time period is within an acceptable time period, 7am-10pm
@@ -16,7 +17,7 @@ const isValidTimePeriod = (event) => {
     return false;
   }
   // check the time is valid - 7am-10pm
-  if (startDateTime.hour() < 7 || endDateTime.hour() > 10) {
+  if (startDateTime.hour() < 7 || endDateTime.hour() > 20) {
     return false;
   }
 
@@ -47,8 +48,13 @@ const availabilityRouter = (dataRepo) => {
           .json({ error: 'Availability event object required.' });
       }
 
+      const { value, error } = await schema.validate(event);
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
+
       // check times are between 7am-10pm
-      const validTime = isValidTimePeriod(event);
+      const validTime = isValidTimePeriod(value);
 
       if (!validTime) {
         return res
@@ -56,7 +62,7 @@ const availabilityRouter = (dataRepo) => {
           .json({ error: 'Availability must be between 7am-10pm.' });
       }
 
-      const newEvent = await dataRepo.addAvailability(event);
+      const newEvent = await dataRepo.addAvailability(value);
 
       return res.status(201).json(newEvent);
     } catch (e) {
@@ -81,8 +87,13 @@ const availabilityRouter = (dataRepo) => {
           .json({ error: 'Availability event id required.' });
       }
 
+      const { value, error } = await schema.validate(event);
+      if (error) {
+        return res.status(400).json({ error: error.message });
+      }
+
       // check times are between 7am-10pm
-      const validTime = isValidTimePeriod(event);
+      const validTime = isValidTimePeriod(value);
 
       if (!validTime) {
         return res
@@ -90,7 +101,7 @@ const availabilityRouter = (dataRepo) => {
           .json({ error: 'Availability must be between 7am-10pm.' });
       }
 
-      const updatedEvent = await dataRepo.updateAvailability(id, event);
+      const updatedEvent = await dataRepo.updateAvailability(id, value);
 
       return res.status(200).json(updatedEvent);
     } catch (e) {
