@@ -17,7 +17,7 @@ const isValidTimePeriod = (event) => {
     return false;
   }
   // check the time is valid - 7am-10pm
-  if (startDateTime.hour() < 7 || endDateTime.hour() > 20) {
+  if (startDateTime.hour() < 7 || endDateTime.hour() > 22) {
     return false;
   }
 
