@@ -34,5 +34,11 @@ module.exports = [
     start: '2021-06-30T19:30:00.000Z',
     end: '2021-07-01T09:30:00.000Z',
     timezone: 'Pacific/Auckland'
+  },
+  {
+    title: '; DROP TABLE users; --',
+    start: '2021-07-01T19:30:00.000Z',
+    end: '2021-07-02T07:15:00.000Z',
+    timezone: 'Pacific/Auckland'
   }
 ];
