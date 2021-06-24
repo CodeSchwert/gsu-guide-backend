@@ -2,19 +2,25 @@ const { Router } = require('express');
 const moment = require('moment-timezone');
 
 /**
- * Check the event time period is within an acceptable time period, 7am-10pm 
- * @param {Object} event 
+ * Check the event time period is within an acceptable time period, 7am-10pm
+ * @param {Object} event
  * @returns {Boolean}
  */
 const isValidTimePeriod = (event) => {
   const { start, end, timezone } = event;
   const startDateTime = moment(start).tz(timezone);
   const endDateTime = moment(end).tz(timezone);
-  console.log(startDateTime, endDateTime);
-  console.log(startDateTime.date(), endDateTime.date()); // 24 25
-  console.log(startDateTime.hour(), endDateTime.hour()); // 16 3
 
-  return Boolean;
+  // time must be 7am-10pm on the same day!
+  if (startDateTime.date() !== endDateTime.date()) {
+    return false;
+  }
+  // check the time is valid - 7am-10pm
+  if (startDateTime.hour() < 7 || endDateTime.hour() > 10) {
+    return false;
+  }
+
+  return true;
 };
 
 const availabilityRouter = (dataRepo) => {
@@ -23,8 +29,6 @@ const availabilityRouter = (dataRepo) => {
   router.get('/', async (req, res) => {
     try {
       const availabilityEvents = await dataRepo.getAvailability();
-
-      console.log(availabilityEvents); // delete me!
 
       return res.status(200).json(availabilityEvents);
     } catch (e) {
@@ -43,8 +47,14 @@ const availabilityRouter = (dataRepo) => {
           .json({ error: 'Availability event object required.' });
       }
 
-      // TODO -- check times are between 7am-10pm
-      isValidTimePeriod(event);
+      // check times are between 7am-10pm
+      const validTime = isValidTimePeriod(event);
+
+      if (!validTime) {
+        return res
+          .status(400)
+          .json({ error: 'Availability must be between 7am-10pm.' });
+      }
 
       const newEvent = await dataRepo.addAvailability(event);
 
@@ -71,7 +81,14 @@ const availabilityRouter = (dataRepo) => {
           .json({ error: 'Availability event id required.' });
       }
 
-      // TODO -- check times are between 7am-10pm
+      // check times are between 7am-10pm
+      const validTime = isValidTimePeriod(event);
+
+      if (!validTime) {
+        return res
+          .status(400)
+          .json({ error: 'Availability must be between 7am-10pm.' });
+      }
 
       const updatedEvent = await dataRepo.updateAvailability(id, event);
 
