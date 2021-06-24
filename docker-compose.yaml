@@ -1,0 +1,28 @@
+version: '3'
+services:
+  database:
+    image: mongo
+    environment:
+      # don't check secrets into git 😐
+      MONGO_INITDB_ROOT_USERNAME: getadminup
+      MONGO_INITDB_ROOT_PASSWORD: Supercalifragilisticexpialidoci0us
+      MONGO_INITDB_DATABASE: gsu-db
+    ports: 
+      - 27017:27017
+    volumes:
+      - ./data/db.init:/docker-entrypoint-initdb.d
+      - gsu-db:/data/db
+
+  server:
+    build:
+      context: .
+    environment:
+      SERVER_PORT: 5000
+      MONGO_CONN: mongodb://getadminup:Supercalifragilisticexpialidoci0us@database:27017/gsu-db?authSource=admin
+    ports:
+      - '5000:5000'
+    depends_on:
+      - database
+
+volumes:
+  gsu-db:

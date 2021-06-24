@@ -8,7 +8,7 @@
   "private": false,
   "scripts": {
     "start:dev": "nodemon -r dotenv/config server.js",
-    "start": "node -r dotenv/config server.js",
+    "start": "node server.js",
     "test": "jest --runInBand --verbose"
   },
   "dependencies": {
