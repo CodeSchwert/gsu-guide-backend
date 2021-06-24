@@ -62,8 +62,12 @@ const updateAvailability = async (id, event) => {
     const updatedEvent = await Availability.findByIdAndUpdate(id, event, {
       new: true // return the updated document
     });
-    const results = projectEvent(updatedEvent);
 
+    if (!updatedEvent) { // event not found
+      return null;
+    }
+
+    const results = projectEvent(updatedEvent);
     return results;
   } catch (e) {
     console.error(e);

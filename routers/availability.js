@@ -102,6 +102,9 @@ const availabilityRouter = (dataRepo) => {
       }
 
       const updatedEvent = await dataRepo.updateAvailability(id, value);
+      if (updatedEvent === null) {
+        return res.status(404).json({ error: 'Availability event not found.' });
+      }
 
       return res.status(200).json(updatedEvent);
     } catch (e) {
