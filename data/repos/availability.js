@@ -1,25 +1,37 @@
 const Availability = require('../models/availabilitySchema');
 
-const queryAvailability = async (query = {}) => {
-  try {
-    const pipeline = [
-      { $match: query }, // match/find all documents
-      { $addFields: { id: '$_id' } }, // alias id field from _id
-      { $project: { _id: 0, __v: 0 } } // don't return _id or __v
-    ];
+/**
+ * Project a mongoose availability document to a POJO with correct properties.
+ * @param {Object} event a mongoose document object
+ * @returns {Object} POJO with projected event id and no __v property
+ */
+const projectEvent = (event) => {
+  if (!event) {
+    throw new Error('Availability event required.');
+  }
+  if (!event._doc) {
+    throw new Error('event must be a mongoose document object.');
+  }
 
-    const results = await Availability.aggregate(pipeline);
+  const projection = { id: event._id, ...event._doc };
+  delete projection._id;
+  delete projection.__v;
+
+  return projection;
+};
+
+const getAvailability = async () => {
+  try {
+    const availabilities = await Availability.find({});
+
+    const results = availabilities.map(a => projectEvent(a));
 
     return results;
+
   } catch (e) {
     console.error(e);
     throw e;
   }
-};
-
-const getAvailability = () => {
-  const results = queryAvailability();
-  return results;
 };
 
 const addAvailability = async (event) => {
@@ -28,12 +40,8 @@ const addAvailability = async (event) => {
       throw new Error('Availability event required.');
     }
 
-    // TODO -- Add Joi object validation on `event`
-
     const newEvent = await Availability.create(event);
-
-    // TODO -- project newEvent in JS rather than make another DB query
-    const results = queryAvailability({ _id: newEvent._id });
+    const results = projectEvent(newEvent);
 
     return results;
   } catch (e) {
@@ -51,14 +59,10 @@ const updateAvailability = async (id, event) => {
       throw new Error('Availability event id required.');
     }
 
-    // TODO -- Add Joi object validation on `event`
-
     const updatedEvent = await Availability.findByIdAndUpdate(id, event, {
       new: true // return the updated document
     });
-
-    // TODO -- project newEvent in JS rather than make another DB query
-    const results = queryAvailability({ _id: updatedEvent._id });
+    const results = projectEvent(updatedEvent);
 
     return results;
   } catch (e) {
