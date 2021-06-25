@@ -1,0 +1,212 @@
+openapi: 3.0.1
+info:
+  title: GetSetUp Guide Availability Backend
+  description: >-
+    An API for booking Guide's teaching availability. To be used with a REST
+    client of your choice, or the [GetSetUp Guide Availability
+    frontend](https://github.com/CodeSchwert/gsu-guide-frontend) React app.
+  contact:
+    email: CodeScwhert@protonmail.com
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  version: 1.0.0
+externalDocs:
+  description: GetSetUp Guide Availability Backend
+  url: 'https://github.com/CodeSchwert/gsu-guide-backend'
+servers:
+  - url: /
+    description: API Server
+tags:
+  - name: availability
+    description: >-
+      Availability events. Block of time that a GSU Guide is available for
+      taking classes.
+paths:
+  /availability:
+    summary: Get all availability events
+    description: >-
+      Each availability event has a start time, end time, title (description),
+      and timezone the booking was made in.
+    get:
+      tags:
+        - availability
+      summary: Get all the availability events
+      description: ''
+      operationId: 'getAllAvailability'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AvailabilityEvent'
+    post:
+      tags:
+        - availability
+      summary: Create a new availability booking
+      description: ''
+      operationId: 'createAvailability'
+      requestBody:
+        description: Availability event that needs to get booked
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAvailabilityEvent'
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityEvent'
+        '400':
+          description: Bad request - check the error message for details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/availability/{eventId}':
+    patch:
+      tags:
+        - availability
+      summary: Update an existing availability event
+      description: ''
+      operationId: 'updateAvailability'
+      parameters:
+        - name: eventId
+          in: path
+          description: ID of availability event to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Existing availability event to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvailabilityEvent'
+      responses:
+        '200':
+          description: successful operation - returns the updated event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityEvent'
+        '400':
+          description: Bad request - check the error message for details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Availability event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - availability
+      summary: Delete an existing availability event
+      description: ''
+      operationId: 'deleteAvailability'
+      parameters:
+        - name: eventId
+          in: path
+          description: ID of availability event to update
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation - returns the updated event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    description: the error message
+                    example: Availability event deleted.
+        '204':
+          description: No content - nothing to do
+          content: {}
+        '400':
+          description: Bad request - check the error message for details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    AvailabilityEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique availability event id.
+          example: '60d43ed166aa541055178c2c'
+        title:
+          type: string
+          description: Availability event title/description to display on the calendar.
+          example: How to code with Javascript
+        start:
+          type: string
+          format: date-time
+          description: >-
+            Availability start time in ISO 8601 date time format. Always
+            returned in UTC time.
+          example: '2021-06-24T23:45:00.000Z'
+        end:
+          type: string
+          format: date-time
+          description: >-
+            Availability end time in ISO 8601 date time format. Always returned
+            in UTC time.
+          example: '2021-06-25T08:00:00.000Z'
+        timezone:
+          type: string
+          description: Timezone the availability booking was made in.
+          example: 'Pacific/Auckland'
+    NewAvailabilityEvent:
+      type: object
+      required:
+        - title
+        - start
+        - end
+        - timezone
+      properties:
+        title:
+          type: string
+          description: Availability event title/description to display on the calendar.
+          example: How to code with Python
+        start:
+          type: string
+          format: date-time
+          description: >-
+            Availability start time in ISO 8601 date time format. Must be in UTC
+            time and between 7am-10pm local time of the client.
+          example: '2021-06-24T23:45:00.000Z'
+        end:
+          type: string
+          format: date-time
+          description: >-
+            Availability end time in ISO 8601 date time format. Must be in UTC
+            time and between 7am-10pm local time of the client.
+          example: '2021-06-25T08:00:00.000Z'
+        timezone:
+          type: string
+          description: Timezone the availability booking was made in.
+          example: 'Pacific/Auckland'
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: the error message
+          example: Availability event id required.
