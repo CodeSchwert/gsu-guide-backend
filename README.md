@@ -42,7 +42,7 @@ The server was built with [this frontend in mind](https://github.com/CodeSchwert
 
 ## Getting Started Manually
 
-Instructions for setting up the server and database without using `docker-compose`. You only need to do this if you didn't star the server with the [Quick Start](#quick-start) instructions!
+Instructions for setting up the server and database without using `docker-compose`. You only need to do this if you didn't start the server with the [Quick Start](#quick-start) instructions!
 
 ### MongoDB Setup
 
