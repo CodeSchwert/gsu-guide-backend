@@ -6,6 +6,7 @@ API to for the Guide teaching availability frontend.
   - [Quick Start](#quick-start)
     - [Quick Stop](#quick-stop)
   - [API](#api)
+  - [GSU Frontend](#gsu-frontend)
   - [Getting Started Manually](#getting-started-manually)
     - [MongoDB Setup](#mongodb-setup)
     - [Server Setup](#server-setup)
@@ -33,7 +34,11 @@ docker-compose down -v
 
 ## API
 
-- TBA
+The server comes with an OpenAPI spec! Once the server is started you can check out the API docs at http://localhost:5000/docs.
+
+## GSU Frontend
+
+The server was built with [this frontend in mind](https://github.com/CodeSchwert/gsu-guide-frontend). Ideally, once this server and database are running, you should be able to start the React app which should interact seemlessly with this API.
 
 ## Getting Started Manually
 
