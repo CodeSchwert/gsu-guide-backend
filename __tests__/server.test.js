@@ -54,6 +54,12 @@ describe('Backend Server', () => {
     expect(response.body.version).toEqual(version);
   });
 
+  it('should serve OpenAI/Swagger API docs', async () => {
+    const response = await request(server).get('/docs/');
+    expect(response.status).toEqual(200);
+    expect(response.text.includes('<title>Swagger UI</title>')).toBe(true);
+  });
+
   describe('Availability Resource', () => {
     it('should return an array of availability objects', async () => {
       const response = await request(server)
